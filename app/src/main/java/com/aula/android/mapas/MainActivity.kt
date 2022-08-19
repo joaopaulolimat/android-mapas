@@ -15,6 +15,7 @@ import values.BitmapHelper
 
 class MainActivity : AppCompatActivity() {
 
+    // criando arrays de pins para mostrar no mapa
     private val places =
         arrayListOf(
             Place(
@@ -42,12 +43,15 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // identificando no layout o fragment para injetar nele o mapa
         val mapFragment =
             supportFragmentManager.findFragmentById(R.id.map_fragment) as SupportMapFragment
 
         mapFragment.getMapAsync { googleMap ->
+            // adicionando pins no mapa
             addMarkers(googleMap)
 
+            // aqui estamos direcionando o mapa para abrir nos locais com pins
             googleMap.setOnMapLoadedCallback{
                 val bounds = LatLngBounds.builder()
                 places.forEach{
@@ -59,11 +63,12 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun addMarkers(googleMap: GoogleMap) {
+        // para cada item dentro do  arrays "places" adicionamos os pins no mapa
         places.forEach { place ->
             googleMap.addMarker(
                 MarkerOptions().title(place.name).snippet(place.address).position(place.latLng)
                     .icon(
-                        BitmapHelper.vectorToBitmap(
+                        BitmapHelper.vectorToBitmap( //conversor de bitmap, aqui estamos definindo um pin estilizado
                             this,
                             R.drawable.ic_dog_foreground,
                             ContextCompat.getColor(this, R.color.purple_700)
@@ -73,6 +78,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // definição de uma classe chamada Place, o google maps já fornece ela,
+    // porém aqui estamos sobrepondo a existente para colocar o rate
     data class Place(
         val name: String, val latLng: LatLng, val address: String, val rating: Float
     )
